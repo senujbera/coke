@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coke</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            margin: 0 auto;
+            margin-top: 50px;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 10px;
+        }
+        .container {
+            position: relative;
+            display: inline-block;
+            width: 300px;
+            height: 300px;
+            border: 1px solid white;
+            overflow: hidden;
+            background-color: black;
+        }
+        .flour-dot {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+        .fade-out {
+            opacity: 0;
+        }
+        #spilledFlour {
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        #moneyDisplay {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td colspan="2">
+                <div class="container" id="flourLump"></div>
+                <div id="spilledFlour"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button onclick="fadeOutDots()">Snort</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button onclick="earnMoney()">Earn $100</button>
+            </td>
+            <td>
+                <button onclick="buyFlour()">Buy Coke ($50)</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" id="moneyDisplay">Money: $0</td>
+        </tr>
+    </table>
+
+    <script>
+        const initialDots = 100;
+        const dotsPerPurchase = 10;
+        let money = 0;
+        let dotsRemoved = 0;
+        
+        function createFlourLump(dotsCount) {
+            const flourLump = document.getElementById('flourLump');
+            flourLump.innerHTML = ''; // Clear existing dots
+            for (let i = 0; i < dotsCount; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'flour-dot';
+                // Randomly position the dots within the container
+                dot.style.left = `${Math.random() * 290}px`; // 300px container width - dot width
+                dot.style.top = `${Math.random() * 290}px`;  // 300px container height - dot height
+                flourLump.appendChild(dot);
+            }
+        }
+
+        function fadeOutDots() {
+            const flourLump = document.getElementById('flourLump');
+            const dots = flourLump.getElementsByClassName('flour-dot');
+            for (let dot of dots) {
+                dot.classList.add('fade-out');
+            }
+            setTimeout(() => {
+                document.getElementById('spilledFlour').innerText = 'You ran out of coke!';
+            }, 1000); // Wait for 1 second for the fade-out effect to complete
+        }
+
+        function earnMoney() {
+            money += 100;
+            document.getElementById('moneyDisplay').innerText = `Money: $${money}`;
+            setTimeout(() => {
+                // Optionally, you can add any functionality that needs to happen every 3 seconds
+            }, 3000); // Set a delay of 3 seconds
+        }
+
+        function buyFlour() {
+            if (money >= 50) {
+                money -= 50;
+                document.getElementById('moneyDisplay').innerText = `Money: $${money}`;
+                const currentDotsCount = document.getElementById('flourLump').getElementsByClassName('flour-dot').length;
+                createFlourLump(currentDotsCount + dotsPerPurchase);
+                document.getElementById('spilledFlour').innerText = ''; // Clear spilled flour message
+            } else {
+                alert('Not enough money to buy coke!');
+            }
+        }
+
+        // Initialize the flour lump with dots
+        createFlourLump(initialDots);
+    </script>
+</body>
+</html>
